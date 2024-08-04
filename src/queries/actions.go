@@ -145,7 +145,7 @@ func ValidCommand(args []string) bool {
 }
 func EvaluateQuery(args []string) {
 	function := args[0]
-	for _, Token := range Functions {
+	for _, Token := range functions {
 		if function == Token.Value {
 			if ValidCommand(args) {
 				Token.Action(args)
