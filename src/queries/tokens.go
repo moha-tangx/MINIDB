@@ -3,18 +3,43 @@ package queries
 import "MINIDB/src/objects"
 
 // valid token types
+
+// type Token = objects.Token
+
+// var Operators = []*Token{&And, &Or, &All, &From}
+// var Objects = []*Token{&Collection, &Collections, &Database, &DBs, &Databases}
+var Functions = []*Function{&Show, &Create, &Delete, &Read, &Update, &USe, &Quit, &Clear, &Insert}
+
 const (
-	Function   = "function"
-	Object     = "object"
-	Aggregator = "aggregator"
-	Operator   = "operator"
-	Identifier = "identifier"
+	and         = "and"
+	or          = "or"
+	show        = "show"
+	create      = "create"
+	use         = "use"
+	read        = "read"
+	delete      = "delete"
+	update      = "update"
+	exit        = "exit"
+	clear       = "clear"
+	insert      = "insert"
+	collections = "collections"
+	collection  = "collection"
+	database    = "database"
+	databases   = "databases"
+	document    = "document"
+	all         = "all"
+	from        = "from"
+	user        = "user"
+	dbs         = "dbs"
+	documents   = "documents"
+	into        = "into"
 )
 
-var Operators = []*Token{&And, &Or}
-var Aggregators = []*Token{&All, &From}
-var Objects = []*Token{&Collection, &Collections, &Database, &DBs, &Databases}
-var Functions = []*Token{&Show, &Create, &Delete, &Read, &Update, &USe, &Quit, &Clear, &Insert}
+//  var keyWords  = []string {};
+
+type Function objects.Function
+type DBObject objects.DBObject
+type Operator objects.Operator
 
 type SomeInf interface {
 	Class(...any) string
@@ -23,112 +48,81 @@ type SomeInf interface {
 type Token objects.Token
 
 // mapping tokens to respective actions
-var And = Token{
-	TokenType: Operator,
-	Value:     "and",
+var And = Operator{
+	Value: and,
 }
-var Or = Token{
-	TokenType: Operator,
-	Value:     "or",
+var Or = Operator{
+	Value: or,
 }
 
 // function Tokens
-var Show = Token{
-	TokenType: Function,
-	Value:     "show",
-	Action:    HandleShow,
+var Show = Function{
+	Name:   show,
+	Action: HandleShow,
 }
-var Create = Token{
-	TokenType: Function,
-	Value:     "create",
-	Action:    HandleCreate,
+var Create = Function{
+	Name:   create,
+	Action: HandleCreate,
 }
-var Delete = Token{
-	TokenType: Function,
-	Value:     "delete",
-	Action:    HandleDelete,
+var Delete = Function{
+	Name:   delete,
+	Action: HandleDelete,
 }
-var Read = Token{
-	TokenType: Function,
-	Value:     "read",
-	Action:    HandleRead,
+var Read = Function{
+	Name:   read,
+	Action: HandleRead,
 }
-var Update = Token{
-	TokenType: Function,
-	Value:     "update",
-	Action:    HandleUpdate,
+var Update = Function{
+	Name:   update,
+	Action: HandleUpdate,
 }
-var USe = Token{
-	TokenType: Function,
-	Value:     "use",
-	Action:    HandleUSe,
+var USe = Function{
+	Name:   use,
+	Action: HandleUSe,
 }
-var Quit = Token{
-	TokenType: Function,
-	Value:     "exit",
-	Action:    HandleExit,
+var Quit = Function{
+	Name:   exit,
+	Action: HandleExit,
 }
-var Clear = Token{
-	TokenType: Function,
-	Value:     "clear",
-	Action:    HandleClear,
+var Clear = Function{
+	Name:   clear,
+	Action: HandleClear,
 }
-var Insert = Token{
-	TokenType: Function,
-	Value:     "insert",
-	Action:    HandleInsert,
+var Insert = Function{
+	Name:   insert,
+	Action: HandleInsert,
 }
 
 // object Tokens
-var Collection = Token{
-	TokenType: Object,
-	Value:     "collection",
-	Action:    nil,
+var Collection = DBObject{
+	Type: collection,
 }
-var Database = Token{
-	TokenType: Object,
-	Value:     "database",
-	Action:    nil,
+var Database = DBObject{
+	Type: database,
 }
-var Databases = Token{
-	TokenType: Object,
-	Value:     "databases",
-	Action:    nil,
+var Databases = DBObject{
+	Type: databases,
 }
-var DBs = Token{
-	TokenType: Object,
-	Value:     "dbs",
-	Action:    nil,
+var DBs = DBObject{
+	Type: dbs,
 }
-var Collections = Token{
-	TokenType: Object,
-	Value:     "collections",
-	Action:    nil,
+var Collections = DBObject{
+	Type: collections,
 }
-var Document = Token{
-	TokenType: Object,
-	Value:     "document",
-	Action:    nil,
+var Document = DBObject{
+	Type: document,
 }
-var Documents = Token{
-	TokenType: Object,
-	Value:     "documents",
-	Action:    nil,
+var Documents = DBObject{
+	Type: documents,
 }
-var Into = Token{
-	TokenType: Aggregator,
-	Value:     "into",
-	Action:    nil,
+var Into = Operator{
+	Value: into,
 }
 
 // operator Tokens
-var From = Token{
-	TokenType: Aggregator,
-	Value:     "from",
-	Action:    nil,
+var From = Operator{
+	Value: from,
 }
-var All = Token{
-	TokenType: Aggregator,
-	Value:     "all",
-	Action:    nil,
+var All = Operator{
+	Value: all,
 }

@@ -22,13 +22,13 @@ const (
 func HandleShow(args []string) *objects.ActionReturn {
 	object := args[1]
 	switch object {
-	case Collections.Value:
+	case Collections.Type:
 		// note:use the return value and print it using the repl's printer
 		_, err := ShowCollections()
 		if err != nil {
 			QueryReturn.SetReturnValue("error", unknown, nil, true, err.Error())
 		}
-	case Databases.Value, DBs.Value:
+	case Databases.Type, DBs.Type:
 		// note:use the return value and print it using the repl's printer
 		ShowDBs()
 	default:
@@ -41,9 +41,9 @@ func HandleCreate(args []string) *objects.ActionReturn {
 	object := args[1]
 	identifier := args[2]
 	switch object {
-	case Collection.Value:
+	case Collection.Type:
 		CreateCollection(identifier)
-	case Database.Value:
+	case Database.Type:
 		CreateDB(identifier)
 	default:
 		HandleInvalidArgs()
@@ -54,9 +54,9 @@ func HandleDelete(args []string) *objects.ActionReturn {
 	object := args[1]
 	identifier := args[2]
 	switch object {
-	case Collection.Value:
+	case Collection.Type:
 		DropCollection(identifier)
-	case Database.Value:
+	case Database.Type:
 		DropDB(identifier)
 	default:
 		HandleInvalidArgs()
@@ -87,7 +87,7 @@ func HandleInsert(args []string) *objects.ActionReturn {
 	document := args[1]
 	pointer := args[2]
 	collection := args[3]
-	document, hasPref := strings.CutPrefix(document, Document.Value+"(")
+	document, hasPref := strings.CutPrefix(document, Document.Type+"(")
 	document, hasPost := strings.CutSuffix(document, ")")
 	document = strings.TrimSpace(document)
 
@@ -146,7 +146,7 @@ func ValidCommand(args []string) bool {
 func EvaluateQuery(args []string) {
 	function := args[0]
 	for _, Token := range Functions {
-		if function == Token.Value {
+		if function == Token.Name {
 			if ValidCommand(args) {
 				Token.Action(args)
 			}
