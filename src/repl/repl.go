@@ -1,7 +1,9 @@
 package repl
 
 import (
+	"MINIDB/src/queries"
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
 	"sync"
@@ -19,7 +21,16 @@ type EVALUATED struct {
 func READ(c chan<- string) {
 	var READER = bufio.NewReader(os.Stdin)
 	for {
-		print(" >> ")
+		repl_name := ""
+		db, err := queries.GetDBInUse()
+		if err != nil {
+			fmt.Println("no database in")
+			panic(err)
+		}
+		if db != nil {
+			repl_name = db.Name
+		}
+		fmt.Printf("%s >> ", repl_name)
 		input, _ := READER.ReadString('\n')
 		c <- input
 		time.Sleep(time.Millisecond * 200)

@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"MINIDB/src/objects"
-	"encoding/json"
 	"os"
 	"strings"
 )
@@ -40,16 +38,4 @@ func GetDirs(path string) ([]os.DirEntry, error) {
 		}
 	}
 	return Dirs, nil
-}
-
-func GetDBConfig() (*objects.ConfigFile, error) {
-	//note: change the config file location before production
-	buff, err := os.ReadFile("C:/Users/Muham/Code/GO/src/MINIDB/test/minidb.config.json")
-	if err != nil {
-		println("could not read config file")
-		return nil, err
-	}
-	var configFile = new(objects.ConfigFile)
-	json.Unmarshal(buff, configFile)
-	return configFile, nil
 }

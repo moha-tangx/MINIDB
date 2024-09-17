@@ -6,14 +6,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/fs"
+	"log"
 	"os"
 	"path"
+	"runtime"
 	"strings"
 )
 
-var rootDir, hasHome = os.LookupEnv("HOMEDRIVE")
+var env = map[string]string{"windows": "C://", "linux": "/usr/local"}
 
 func main() {
+	OS := runtime.GOOS
+	default_root_dir := env[OS]
+
 	fmt.Println(
 		`
 	you are about to install mini db press Enter to proceed or X to cancel
@@ -28,8 +33,8 @@ func main() {
 		return
 	}
 
-	proceedInstallation = strings.TrimSpace(proceedInstallation)
-	if proceedInstallation == "x" || proceedInstallation == "X" {
+	proceedInstallation = strings.ToLower(strings.TrimSpace(proceedInstallation))
+	if proceedInstallation == "x" {
 		os.Exit(0)
 		return
 	}
@@ -53,11 +58,7 @@ func main() {
 	// if user did not provide an installation path we set it to users root directory
 	installationPath = strings.TrimSpace(installationPath)
 	if installationPath == "" {
-		if !hasHome {
-			println("$HOMEDRIVE env variable not found")
-			return
-		}
-		installationPath = rootDir
+		installationPath = default_root_dir
 	}
 
 	installationPath = path.Clean(installationPath)
@@ -67,7 +68,7 @@ func main() {
 	// path to bin directory where programme is installed
 	binPath := path.Join(mainDirPath, "bin")
 
-	if err := os.MkdirAll(binPath, os.ModeDir); err != nil {
+	if err := os.MkdirAll(binPath, os.ModePerm); err != nil {
 		println("unexpected error, could not create dir /bin")
 		println(err.Error())
 		return
@@ -75,7 +76,7 @@ func main() {
 
 	// path to log directory where log file are stored
 	logPath := path.Join(mainDirPath, "log")
-	if err := os.MkdirAll(logPath, os.ModeDir); err != nil {
+	if err := os.MkdirAll(logPath, os.ModePerm); err != nil {
 		println("unexpected error, could not create dir /log")
 		println(err.Error())
 		return
@@ -103,21 +104,21 @@ func main() {
 
 	dataPath = path.Clean(dataPath)
 	// create directory to store data
-	if err := os.MkdirAll(dataPath, os.ModeDir); err != nil {
+	if err := os.MkdirAll(dataPath, os.ModePerm); err != nil {
 		println("unexpected error, could not create dir /data")
 		println(err.Error())
 		return
 	}
 	// path to database configuration file
-	config_FIle_Path := path.Join(binPath, "minidb.config.json")
+	config_file_Path := path.Join(binPath, "minidb.config.json")
 
-	// create database configuration file
-	Config_file, configErr := os.OpenFile(config_FIle_Path, os.O_CREATE, os.ModePerm)
+	//create database configuration file
+	Config_file, configErr := os.OpenFile(config_file_Path, os.O_CREATE, os.ModePerm)
 	if configErr != nil {
 		println("could not create configuration fle")
 		return
 	}
-	defer Config_file.Close()
+	Config_file.Close()
 
 	var dbConfig objects.ConfigFile
 	dbConfig.Storage.DataPath = dataPath
@@ -131,8 +132,9 @@ func main() {
 		println("could not parse db config")
 	}
 
-	if _, err := Config_file.Write(buff); err != nil {
+	if err := os.WriteFile(config_file_Path, buff, fs.FileMode(os.O_WRONLY)); err != nil {
 		println("could not write bytes to file")
+		log.Fatal(err)
 		return
 	}
 

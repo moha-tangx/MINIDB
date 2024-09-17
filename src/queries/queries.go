@@ -100,8 +100,11 @@ func GetDBInUse() (*objects.DATABASE, error) {
 		print(GetErr.Error())
 		return nil, GetErr
 	}
-	firstDBName := databases[0].Name()
-	SetDBInUse(firstDBName)
+	if len(databases) < 1 {
+		return nil, GetErr
+	}
+	firstDB := databases[0].Name()
+	SetDBInUse(firstDB)
 	return DBInUSe, nil
 }
 
@@ -211,6 +214,9 @@ func GetCollections() ([]os.DirEntry, error) {
 	DBInUSe, getDBerr := GetDBInUse()
 	if getDBerr != nil {
 		return nil, getDBerr
+	}
+	if DBInUSe == nil {
+		return nil, nil
 	}
 	entries, err := utils.GetFiles(DBInUSe.Path)
 	if err != nil {

@@ -51,6 +51,10 @@ func HandleCreate(args []string) *objects.ActionReturn {
 	return QueryReturn
 }
 func HandleDelete(args []string) *objects.ActionReturn {
+	if len(args) < 3 {
+		HandleInvalidArgs()
+		return nil
+	}
 	object := args[1]
 	identifier := args[2]
 	switch object {
@@ -87,8 +91,8 @@ func HandleInsert(args []string) *objects.ActionReturn {
 	document := args[1]
 	pointer := args[2]
 	collection := args[3]
-	document, hasPref := strings.CutPrefix(document, Document.Type+"(")
-	document, hasPost := strings.CutSuffix(document, ")")
+	hasPref := strings.HasPrefix(document, Document.Type+"(")
+	hasPost := strings.HasSuffix(document, ")")
 	document = strings.TrimSpace(document)
 
 	if !hasPost || !hasPref {
@@ -144,6 +148,9 @@ func ValidCommand(args []string) bool {
 	return true
 }
 func EvaluateQuery(args []string) {
+	if len(args) < 1 {
+		return
+	}
 	function := args[0]
 	for _, Token := range Functions {
 		if function == Token.Name {
